@@ -159,14 +159,14 @@ UAT traffic will be displayed as ADS-B, this can't be avoided.
 
 
 ```
-wget -nv -O /tmp/install.sh https://github.com/wiedehopf/tar1090/raw/master/install.sh
+wget -nv -O /tmp/install.sh https://github.com/rkarikari/tar1090/raw/master/install.sh
 sudo bash /tmp/install.sh /run/combine1090
 ```
 
 ## Remove / Uninstall
 
 ```
-sudo bash -c "$(wget -nv -O - https://github.com/wiedehopf/tar1090/raw/master/uninstall.sh)"
+sudo bash -c "$(wget -nv -O - https://github.com/rkarikari/tar1090/raw/master/uninstall.sh)"
 ```
 
 ## Using the filters
