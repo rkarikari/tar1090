@@ -2194,7 +2194,8 @@ function webglAddLayer() {
             ],
             'icon-rotation': [ 'get' , 'rotation' ],
             'icon-rotate-with-view': false,
-            'icon-scale': [ 'get', 'scale', 'number' ]
+            //'icon-scale': [ 'array', ['get', 'scale'], ['get', 'scale'] ],
+            'icon-scale': [ 'abs', ['get', 'scale']],
         };
         if (heatmap) {
             glStyle = {
@@ -5468,6 +5469,13 @@ function checkMovement() {
         return;
     }
 
+    let currentTime = new Date().getTime()/1000;
+    if (currentTime > g.route_cache_timer) {
+        // check if it's time to send a batch of request to the API server
+        g.route_cache_timer = currentTime + 1;
+        routeDoLookup(currentTime);
+    }
+
     const zoom = OLMap.getView().getZoom();
     const center = ol.proj.toLonLat(OLMap.getView().getCenter());
     const ts = new Date().getTime();
@@ -6931,6 +6939,7 @@ function everySecond() {
     if (traceRate > 0)
         traceRate = traceRate  * 0.985 - 1;
     updateIconCache();
+
 }
 
 let getTraceTimeout = null;
