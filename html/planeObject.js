@@ -675,7 +675,7 @@ PlaneObject.prototype.getDataSourceNumber = function() {
     if (this.dataSource == "adsb")
         return 1;
 
-    if (this.dataSource == "other")
+    if (this.dataSource == "other" || this.dataSource == "ais")
         return 7;
 
     return 8;
@@ -1332,7 +1332,7 @@ PlaneObject.prototype.updatePositionData = function(now, last, data, init) {
     if (this.position && SitePosition) {
         if (pTracks && this.sitedist) {
             this.sitedist = Math.max(ol.sphere.getDistance(SitePosition, this.position), this.sitedist);
-        } else if (!init) {
+        } else if (!init || pTracks) {
             this.sitedist = ol.sphere.getDistance(SitePosition, this.position);
         }
     }
@@ -1495,6 +1495,8 @@ PlaneObject.prototype.updateData = function(now, last, data, init) {
         this.dataSource = "other";
     } else if (type == 'unknown') {
         this.dataSource = "unknown";
+    } else if (type == 'ais') {
+        this.dataSource = "ais";
     }
 
     if (isArray) {
