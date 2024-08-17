@@ -83,7 +83,7 @@ let firstFetch = true;
 let debugCounter = 0;
 let pathName = window.location.pathname.replace(/\/+/, '/') || "/";
 let sourcesFilter = null;
-let sources = ['adsb', ['uat', 'adsr'], 'mlat', 'tisb', 'modeS', 'other', 'adsc'];
+let sources = ['adsb', ['uat', 'adsr'], 'mlat', 'tisb', 'modeS', 'other', 'adsc', 'ais'];
 let flagFilter = null;
 let flagFilterValues = ['military', 'pia', 'ladd'];
 let showTrace = false;
@@ -838,20 +838,15 @@ function initPage() {
                 SiteLat = CenterLat = DefaultCenterLat = lat;
                 SiteLon = CenterLon = DefaultCenterLon = lon;
                 SiteOverride = true;
-            } else {
-                loStore['SiteLat'] = lat;
-                loStore['SiteLon'] = lon;
             }
+            loStore['SiteLat'] = lat;
+            loStore['SiteLon'] = lon;
         }
     }
     if (loStore['SiteLat'] != null && loStore['SiteLon'] != null) {
         if (usp.has('SiteClear')) {
             loStore.removeItem('SiteLat');
             loStore.removeItem('SiteLon');
-        } else if (!usp.has('SiteNosave')) {
-            SiteLat = CenterLat = DefaultCenterLat = parseFloat(loStore['SiteLat']);
-            SiteLon = CenterLon = DefaultCenterLon = parseFloat(loStore['SiteLon']);
-            SiteOverride = true;
         }
     } else {
         CenterLat = DefaultCenterLat;
@@ -1762,6 +1757,10 @@ function initSourceFilter(colors) {
     html += createFilter(colors['modeS'], 'Mode-S', sources[4]);
     html += createFilter(colors['other'], 'Other', sources[5]);
     html += createFilter(colors['uat'], 'ADS-C', sources[6]);
+
+    if (aiscatcher_server) {
+        html += createFilter(colors['ais'], 'AIS', sources[7]);
+    }
 
     document.getElementById('sourceFilter').innerHTML = html;
 
@@ -6742,6 +6741,11 @@ function geoFindMe() {
 
 let initSitePosFirstRun = true;
 function initSitePos() {
+    // fall back to loStore position
+    if (loStore['SiteLat'] != null && loStore['SiteLon'] != null && SiteLat == null && SiteLon == null) {
+        SiteLat = CenterLat = DefaultCenterLat = parseFloat(loStore['SiteLat']);
+        SiteLon = CenterLon = DefaultCenterLon = parseFloat(loStore['SiteLon']);
+    }
     // Set SitePosition
     if (SiteLat != null && SiteLon != null) {
         SitePosition = [SiteLon, SiteLat];
