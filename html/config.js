@@ -375,7 +375,7 @@ HideCols = [
 
 //audio_url = ""; // show html5 audio player for this URL
 
-aiscatcher_server = "https://radiosport.cloudns.ord/ais/"; // update with your server address
+aiscatcher_server = "https://radiosport.cloudns.org/ais/"; // update with your server address
 aiscatcher_refresh = 15; // refresh interval in seconds
 
 
