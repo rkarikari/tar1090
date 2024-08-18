@@ -22,10 +22,10 @@
 // degrees.
 
 // Default center of the map.
-//DefaultCenterLat = 45.0;
-//DefaultCenterLon = 9.0;
+DefaultCenterLat = 6.6;
+DefaultCenterLon = -1.0;
 // The google maps zoom level, 0 - 16, lower is further out
-//DefaultZoomLvl   = 7;
+DefaultZoomLvl   = 8;
 
 // specify lat lon that the 'auto-select plane' feature will choose the closest plane to
 // autoselectCoords = [42, 21];
@@ -88,7 +88,7 @@
 // dwdLayers = 'dwd:RX-Produkt';
 
 // Default map dim state, true or false.
-// MapDim = true;
+MapDim = false;
 // mapDimPercentage = 0.45;
 // mapContrastPercentage = 0;
 
@@ -261,7 +261,7 @@ MapboxAPIKey = null;
 // imageConfigLink = "";
 // imageConfigText = "";
 
-//flightawareLinks = false;
+flightawareLinks = true;
 //shareBaseUrl = 'https://globe.adsbexchange.com/';
 // planespottersLinks = false;
 
