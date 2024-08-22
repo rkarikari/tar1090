@@ -331,7 +331,7 @@ function processReceiverUpdate(data, init) {
         globeIndexNow[data.globeIndex] = data.now;
     }
 
-    if (!(uat || init || (globeIndex && adsbexchange))) {
+    if (!(uat || init || (globeIndex && aggregator))) {
         updateMessageRate(data);
     }
 
@@ -1692,15 +1692,17 @@ jQuery('#selected_altitude_geom1')
 
     TAR.altitudeChart.init();
 
-    if (adsbexchange) {
-        jQuery('#adsbexchange_header').show();
+    if (aggregator) {
+        jQuery('#aggregator_header').show();
         jQuery('#credits').show();
         if (!onMobile) {
             jQuery('#creditsSelected').show();
         }
-        jQuery('#selected_infoblock').addClass('adsbx-selected-bg');
+        jQuery('#selected_infoblock').addClass('aggregator-selected-bg');
+
+	// activate to prevent iframe use
         if (false && window.self != window.top) {
-            window.top.location.href = "https://www.adsbexchange.com/";
+            window.top.location.href = "https://www.aggregator.com/";
             return;
         }
     }
@@ -2015,7 +2017,7 @@ function setIntervalTimers() {
         jQuery("#timers_paused").css('display','none');
     }
     console.log(localTime(new Date()) + " set timers ");
-    if ((adsbexchange || dynGlobeRate) && !uuid) {
+    if ((dynGlobeRate && !uuid) {
         timers.globeRateUpdate = setInterval(globeRateUpdate, 180000);
     }
     pollPositionInterval();
@@ -2401,9 +2403,6 @@ function ol_map_init() {
         }
     });
     if (!foundType) {
-        if (adsbexchange) {
-            MapType_tar1090 = "osm_adsbx";
-        } else {
             MapType_tar1090 = "osm";
         }
     }
@@ -2605,7 +2604,7 @@ function initMap() {
     zoomLvl = Number(loStore['zoomLvl']) || DefaultZoomLvl;
     zoomLvlCache = zoomLvl;
 
-    if (globeIndex && adsbexchange) {
+    if (globeIndex && aggregator) {
         jQuery('#dump1090_total_history_td').hide();
         jQuery('#dump1090_message_rate_td').hide();
     }
@@ -3151,7 +3150,7 @@ function displayPhoto() {
     //console.log(linkToPicture);
     new_html = '<a class=\"link\" href="'+linkToPicture+'" target="_blank" rel="noopener noreferrer"><img id="airplanePhoto" src=' +photoToPull+'></a>';
     let copyright = photos[0]["photographer"] || photos[0]["user"];
-    jQuery('#copyrightInfo').html("<span>Image © " + copyright +"</span>");
+    jQuery('#copyrightInfo').html("<span>Image ?? " + copyright +"</span>");
     setPhotoHtml(new_html);
     adjustInfoBlock();
 }
@@ -3441,7 +3440,7 @@ function refreshSelected() {
 
 
     if (oat != null)
-        jQuery('#selected_temp').updateText(Math.round(tat) + ' / ' + Math.round(oat)  + ' °C');
+        jQuery('#selected_temp').updateText(Math.round(tat) + ' / ' + Math.round(oat)  + ' ??C');
     else
         jQuery('#selected_temp').updateText('n/a');
 
@@ -3583,13 +3582,13 @@ function refreshSelected() {
                 silDesc = "&gt; 1e-3";
                 break;
             case 1:
-                silDesc = "≤ 1e-3";
+                silDesc = "??? 1e-3";
                 break;
             case 2:
-                silDesc = "≤ 1e-5";
+                silDesc = "??? 1e-5";
                 break;
             case 3:
-                silDesc = "≤ 1e-7";
+                silDesc = "??? 1e-7";
                 break;
             default:
                 silDesc = "n/a";
@@ -3890,7 +3889,7 @@ function refreshFeatures() {
     cols.wd = {
         text: 'Wind D.',
         sort: function () { sortBy('wd', compareNumeric, function(x) { return x.wd; }); },
-        value: function(plane) { return plane.wd != null ? (plane.wd + '°') : ''; },
+        value: function(plane) { return plane.wd != null ? (plane.wd + '??') : ''; },
         align: 'right' };
     cols.ws = {
         text: 'Wind S.',
@@ -6289,6 +6288,11 @@ function updateAddressBar() {
     lastAddressBarUpdate = time;
     */
 
+    if (string == updateAddressBarString) {
+        return;
+    }
+    updateAddressBarString = string;
+
     if (!updateAddressBarPushed) {
         // make sure we keep the thing we clicked on first in the browser history
         window.history.pushState("object or string", "Title", string);
@@ -6361,7 +6365,7 @@ function refreshInt() {
     if (!mapIsVisible)
         refresh *= 2;
 
-    if (adsbexchange && window.self != window.top) {
+    if (aggregator && window.self != window.top) {
         refresh *= 1.5;
     } else if (onMobile && TrackedAircraftPositions > 800) {
         refresh *= 1.5;
@@ -6727,7 +6731,7 @@ function geoFindMe() {
         g.geoFindDefer.reject();
     } else {
         // change SitePos on location change
-        console.log('Locating…');
+        console.log('Locating???');
         const geoposOptions = {
             enableHighAccuracy: false,
             timeout: Infinity,
@@ -8763,7 +8767,7 @@ function requestBoxString() {
     return `${extent.minLat.toFixed(6)},${extent.maxLat.toFixed(6)},${minLon},${maxLon}`;
 }
 
-if (adsbexchange && window.location.hostname.startsWith('inaccurate')) {
+if (aggregator && window.location.hostname.startsWith('inaccurate')) {
     jQuery('#inaccurate_warning').removeClass('hidden');
     document.getElementById('inaccurate_warning').innerHTML = `
 <br>
@@ -8823,12 +8827,14 @@ function adjust_baro_alt(alt) {
 }
 
 function globeRateUpdate() {
-    if (adsbexchange) {
+    if (aggregator) {
         dynGlobeRate = true;
-        const cookieExp = getCookie('adsbx_sid').split('_')[0];
-        const ts = new Date().getTime();
-        if (!cookieExp || cookieExp < ts + 3600*1000)
-            setCookie('adsbx_sid', ((ts + 2*86400*1000) + '_' + Math.random().toString(36).substring(2, 15)), 2);
+        if (0) {
+            const cookieExp = getCookie('asdf_id').split('_')[0];
+            const ts = new Date().getTime();
+            if (!cookieExp || cookieExp < ts + 3600*1000)
+                setCookie('adsbx_sid', ((ts + 2*86400*1000) + '_' + Math.random().toString(36).substring(2, 15)), 2);
+        }
     }
     if (dynGlobeRate) {
         return jQuery.ajax({url:'/globeRates.json', cache: false, dataType: 'json', }).done(function(data) {
