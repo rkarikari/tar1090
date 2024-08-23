@@ -331,7 +331,7 @@ function processReceiverUpdate(data, init) {
         globeIndexNow[data.globeIndex] = data.now;
     }
 
-    if (!(uat || init || (globeIndex && adsbexchange))) {
+    if (!(uat || init || (globeIndex && aggregator))) {
         updateMessageRate(data);
     }
 
@@ -1692,15 +1692,17 @@ jQuery('#selected_altitude_geom1')
 
     TAR.altitudeChart.init();
 
-    if (adsbexchange) {
-        jQuery('#adsbexchange_header').show();
+    if (aggregator) {
+        jQuery('#aggregator_header').show();
         jQuery('#credits').show();
         if (!onMobile) {
             jQuery('#creditsSelected').show();
         }
-        jQuery('#selected_infoblock').addClass('adsbx-selected-bg');
-        if (false && window.self != window.top) {
-            window.top.location.href = "https://www.adsbexchange.com/";
+        jQuery('#selected_infoblock').addClass('aggregator-selected-bg');
+
+        // activate to prevent iframe use
+        if (inhibitIframe && window.self != window.top) {
+            window.top.location.href = "https://www.aggregator.com/";
             return;
         }
     }
@@ -2015,7 +2017,7 @@ function setIntervalTimers() {
         jQuery("#timers_paused").css('display','none');
     }
     console.log(localTime(new Date()) + " set timers ");
-    if ((adsbexchange || dynGlobeRate) && !uuid) {
+    if (dynGlobeRate && !uuid) {
         timers.globeRateUpdate = setInterval(globeRateUpdate, 180000);
     }
     pollPositionInterval();
@@ -2401,11 +2403,7 @@ function ol_map_init() {
         }
     });
     if (!foundType) {
-        if (adsbexchange) {
-            MapType_tar1090 = "osm_adsbx";
-        } else {
-            MapType_tar1090 = "osm";
-        }
+        MapType_tar1090 = "osm";
     }
 
     ol.control.LayerSwitcher.forEachRecursive(layers_group, function(lyr) {
@@ -2605,7 +2603,7 @@ function initMap() {
     zoomLvl = Number(loStore['zoomLvl']) || DefaultZoomLvl;
     zoomLvlCache = zoomLvl;
 
-    if (globeIndex && adsbexchange) {
+    if (globeIndex && aggregator) {
         jQuery('#dump1090_total_history_td').hide();
         jQuery('#dump1090_message_rate_td').hide();
     }
@@ -6165,6 +6163,7 @@ function inView(pos, ex) {
 let lastAddressBarUpdate = 0;
 let updateAddressBarTimeout;
 let updateAddressBarPushed = false;
+let updateAddressBarString = "";
 function updateAddressBar() {
     if (!window.history || !window.history.replaceState)
         return;
@@ -6289,6 +6288,11 @@ function updateAddressBar() {
     lastAddressBarUpdate = time;
     */
 
+    if (string == updateAddressBarString) {
+        return;
+    }
+    updateAddressBarString = string;
+
     if (!updateAddressBarPushed) {
         // make sure we keep the thing we clicked on first in the browser history
         window.history.pushState("object or string", "Title", string);
@@ -6361,7 +6365,7 @@ function refreshInt() {
     if (!mapIsVisible)
         refresh *= 2;
 
-    if (adsbexchange && window.self != window.top) {
+    if (aggregator && window.self != window.top) {
         refresh *= 1.5;
     } else if (onMobile && TrackedAircraftPositions > 800) {
         refresh *= 1.5;
@@ -8763,7 +8767,7 @@ function requestBoxString() {
     return `${extent.minLat.toFixed(6)},${extent.maxLat.toFixed(6)},${minLon},${maxLon}`;
 }
 
-if (adsbexchange && window.location.hostname.startsWith('inaccurate')) {
+if (aggregator && window.location.hostname.startsWith('inaccurate')) {
     jQuery('#inaccurate_warning').removeClass('hidden');
     document.getElementById('inaccurate_warning').innerHTML = `
 <br>
@@ -8823,12 +8827,14 @@ function adjust_baro_alt(alt) {
 }
 
 function globeRateUpdate() {
-    if (adsbexchange) {
+    if (aggregator) {
         dynGlobeRate = true;
-        const cookieExp = getCookie('adsbx_sid').split('_')[0];
-        const ts = new Date().getTime();
-        if (!cookieExp || cookieExp < ts + 3600*1000)
-            setCookie('adsbx_sid', ((ts + 2*86400*1000) + '_' + Math.random().toString(36).substring(2, 15)), 2);
+        if (0) {
+            const cookieExp = getCookie('asdf_id').split('_')[0];
+            const ts = new Date().getTime();
+            if (!cookieExp || cookieExp < ts + 3600*1000)
+                setCookie('adsbx_sid', ((ts + 2*86400*1000) + '_' + Math.random().toString(36).substring(2, 15)), 2);
+        }
     }
     if (dynGlobeRate) {
         return jQuery.ajax({url:'/globeRates.json', cache: false, dataType: 'json', }).done(function(data) {

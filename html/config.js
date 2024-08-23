@@ -262,6 +262,7 @@ MapboxAPIKey = null;
 // imageConfigText = "";
 
 flightawareLinks = true;
+
 //shareBaseUrl = 'https://adsb.lol/';
 //shareBaseUrl = 'https://globe.adsb.fi/';
 //shareBaseUrl = 'https://globe.airplanes.live/';
