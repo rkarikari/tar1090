@@ -119,9 +119,9 @@ function revision() {
 }
 
 if ! { [[ "$1" == "test" ]] && cd "$gpath/git-db"; }; then
-    DB_VERSION_NEW=$(curl --silent --show-error "https://raw.githubusercontent.com/rkarikari/tar1090-db/pilot/version")
+    DB_VERSION_NEW=$(curl --silent --show-error "https://raw.githubusercontent.com/rkarikari/tar1090-db/master/version")
     if  [[ "$(cat "$gpath/git-db/version" 2>/dev/null)" != "$DB_VERSION_NEW" ]]; then
-        getGIT "$db_repo" "pilot" "$gpath/git-db" || true
+        getGIT "$db_repo" "master" "$gpath/git-db" || true
     fi
 fi
 
