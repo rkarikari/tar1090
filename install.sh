@@ -146,7 +146,7 @@ if [[ "$1" == "test" ]] || [[ -n "$git_source" ]]; then
     cd "$gpath/git"
     TAR_VERSION="$(cat version)_dirty"
 else
-    VERSION_NEW=$(curl --silent --show-error "https://raw.githubusercontent.com/wiedehopf/tar1090/pilot/version")
+    VERSION_NEW=$(curl --silent --show-error "https://raw.githubusercontent.com/rkarikari/tar1090/pilot/version")
     if  [[ "$(cat "$gpath/git/version" 2>/dev/null)" != "$VERSION_NEW" ]]; then
         if ! getGIT "$repo" "pilot" "$gpath/git"; then
             echo "Unable to download files, exiting! (Maybe try again?)"
