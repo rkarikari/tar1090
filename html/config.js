@@ -261,9 +261,6 @@ MapboxAPIKey = null;
 // imageConfigLink = "";
 // imageConfigText = "";
 
-
-flightawareLinks = true;
-
 flightawareLinks = true;
 
 //shareBaseUrl = 'https://adsb.lol/';
