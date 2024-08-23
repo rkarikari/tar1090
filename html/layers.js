@@ -115,15 +115,15 @@ function createBaseLayers() {
         }));
         world.push(new ol.layer.Tile({
             source: new ol.source.XYZ({
-                url: "https://services.arcgisonline.com/ArcGIS/rest/services/Canvas/World_Light_Gray_Base/MapServer/tile/{z}/{y}/{x}",
-                attributions: 'Powered by <a href="https://www.esri.com">Esri.com</a>' +
-                '— Sources: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+                url: "https://{a-c}.tile-cyclosm.openstreetmap.fr/cyclosm/{z}/{x}/{y}.png",
+                attributions: '<a href="http://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> | <a href="https://github.com/cyclosm/cyclosm-cartocss-style/releases" title="CyclOSM - Open Bicycle render">CyclOSM</a> ' +
+                'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
                 attributionsCollapsible: false,
-                maxZoom: 16,
+                maxZoom: 20,
                 transition: tileTransition,
             }),
-            name: 'esri_gray',
-            title: 'ESRI.com Gray',
+            name: 'cyclosm',
+            title: 'CyclOSM',
             type: 'base',
         }));
         world.push(new ol.layer.Tile({
