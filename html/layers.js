@@ -118,7 +118,11 @@ function createBaseLayers() {
             source: new ol.source.XYZ({
                 url: "https://services.arcgisonline.com/ArcGIS/rest/services/World_Street_Map/MapServer/tile/{z}/{y}/{x}",
                 attributions: 'Powered by <a href="https://www.esri.com">Esri.com</a>' +
-                '??? Sources: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+test
+                '- Sources: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+
+                '- Sources: Esri, i-cubed, USDA, USGS, AEX, GeoEye, Getmapping, Aerogrid, IGN, IGP, UPR-EGP, and the GIS User Community',
+master
                 attributionsCollapsible: false,
                 maxZoom: 17,
                 transition: tileTransition,
