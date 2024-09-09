@@ -2043,24 +2043,12 @@ function setIntervalTimers() {
     }
 
     if (aiscatcher_server) {
-        function updateAIScatcher() {
-            let req = jQuery.ajax({
-                url: aiscatcher_server + '/geojson',
-                dataType: 'text',
-            });
-
-            req.done(function(data) {
-                //console.log(data);
-                g.aiscatcher_source.setUrl("data:text/plain;base64,"+btoa(data));
-                g.aiscatcher_source.refresh();
-
-                if (aiscatcher_test) {
-                    processAIS(JSON.parse(data));
-                }
-            });
-        }
         timers.aiscatcher = setInterval(updateAIScatcher, aiscatcher_refresh * 1000);
         updateAIScatcher();
+    }
+    if (droneJson) {
+        timers.droneJson = setInterval(updateDrones, droneRefresh * 1000);
+        updateDrones();
     }
 
     timersActive = true;
@@ -2071,17 +2059,82 @@ function setIntervalTimers() {
     handleVisibilityChange();
 }
 
-let ais_now = new Date().getTime() / 1000;
-let ais_last = new Date().getTime() / 1000;
+function updateDrones() {
+    let req = jQuery.ajax({
+        url: droneJson,
+        dataType: 'json',
+    });
+
+    req.done(function(data) {
+        handleDrones(data);
+    });
+}
+
+function handleDrones(data) {
+    g.droneLast = g.droneNow || 0;
+    g.droneNow = new Date().getTime() / 1000;
+
+    for (let i in data) {
+        processDrone(data[i], g.droneNow, g.droneLast);
+    }
+}
+
+function processDrone(drone, now, last) {
+    const hex = drone.id;
+
+    // Do we already have this plane object in g.planes?
+    // If not make it.
+    let plane = g.planes[hex]
+
+    if (!plane) {
+        plane = new PlaneObject(hex);
+    }
+
+    let ac = {};
+
+    ac.type = 'other';
+    ac.t = 'DRON';
+    ac.gs = drone.speed;
+    ac.flight = drone.description;
+    ac.alt_baro = drone.alt;
+    ac.baro_rate = drone.vspeed;
+
+    ac.seen = now - new Date(drone.time).getTime() / 1000;
+
+    if (drone.lat && drone.lon) {
+        ac.lat = drone.lat;
+        ac.lon = drone.lon
+        ac.seen_pos = ac.seen;
+    }
+    //console.log(ac);
+
+    plane.updateData(now, last, ac, false);
+}
+
+function updateAIScatcher() {
+    let req = jQuery.ajax({
+        url: aiscatcher_server + '/geojson',
+        dataType: 'text',
+    });
+
+    req.done(function(data) {
+        //console.log(data);
+        g.aiscatcher_source.setUrl("data:text/plain;base64,"+btoa(data));
+        g.aiscatcher_source.refresh();
+
+        if (aiscatcher_test) {
+            processAIS(JSON.parse(data));
+        }
+    });
+}
 
 function processAIS(data) {
-
-    ais_now = new Date().getTime() / 1000;
-    ais_last = ais_now;
+    g.ais_last = g.ais_now || 0;
+    g.ais_now = new Date().getTime() / 1000;
 
     const features = data.features;
     for (let i in features) {
-        processBoat(features[i], ais_now, ais_last);
+        processBoat(features[i], g.ais_now, g.ais_last);
     }
 }
 
