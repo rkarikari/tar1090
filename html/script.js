@@ -2054,14 +2054,17 @@ function setIntervalTimers() {
 }
 
 function updateDrones() {
-    let req = jQuery.ajax({
-        url: droneJson,
-        dataType: 'json',
-    });
+    let jsons = Array.isArray(droneJson) ? droneJson : [ droneJson ];
+    for (let i in jsons) {
+        let req = jQuery.ajax({
+            url: jsons[i],
+            dataType: 'json',
+        });
 
-    req.done(function(data) {
-        handleDrones(data);
-    });
+        req.done(function(data) {
+            handleDrones(data);
+        });
+    }
 }
 
 function handleDrones(data) {
@@ -2084,7 +2087,7 @@ function processDrone(drone, now, last) {
         plane = new PlaneObject(hex);
     }
 
-    let ac = {};
+    let ac = drone;
 
     ac.type = 'other';
     ac.t = 'DRON';
@@ -6829,7 +6832,7 @@ function initSitePos() {
             if (SitePosition) {
                 TAR.planeMan.cols.sitedist.sort();
             } else {
-                planeMan.sortAscending = false;
+                TAR.planeMan.sortAscending = false;
                 TAR.planeMan.cols.altitude.sort();
             }
         }
