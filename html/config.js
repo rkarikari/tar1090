@@ -22,7 +22,7 @@
 // degrees.
 
 // The google maps zoom level, 0 - 16, lower is further out
-//DefaultZoomLvl   = 7;
+DefaultZoomLvl   = 8;
 
 // specify lat lon that the 'auto-select plane' feature will choose the closest plane to
 // autoselectCoords = [42, 21];
@@ -82,7 +82,7 @@
 // dwdLayers = 'dwd:RX-Produkt';
 
 // Default map dim state, true or false.
-// MapDim = true;
+MapDim = false;
 // mapDimPercentage = 0.45;
 // mapContrastPercentage = 0;
 
@@ -255,7 +255,8 @@ MapboxAPIKey = null;
 // imageConfigLink = "";
 // imageConfigText = "";
 
-//flightawareLinks = false;
+flightawareLinks = true;
+
 //shareBaseUrl = 'https://adsb.lol/';
 //shareBaseUrl = 'https://globe.adsb.fi/';
 //shareBaseUrl = 'https://globe.airplanes.live/';
@@ -373,8 +374,8 @@ HideCols = [
 //audio_url = ["", "", "", "", "", ""]; // show html5 audio player for these URLs
 // example with titles: audio_url = [ ["URL1", "title1" ], ["URL2", "title2"] ];
 
-// aiscatcher_server = "http://192.168.1.113:8100"; // update with your server address
-// aiscatcher_refresh = 15; // refresh interval in seconds
+aiscatcher_server = "http://192.168.8.142:8443/"; // update with your server address
+aiscatcher_refresh = 15; // refresh interval in seconds
 // aiscatcher_test = true; // show with squares on the aircraft icon layer
 // aisTimeout = 1200;
 
