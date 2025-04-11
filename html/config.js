@@ -21,21 +21,13 @@
 // provided by dump1090 itself. All positions are in decimal
 // degrees.
 
-// Default center of the map.
-DefaultCenterLat = 6.6;
-DefaultCenterLon = -1.0;
 // The google maps zoom level, 0 - 16, lower is further out
 DefaultZoomLvl   = 8;
 
 // specify lat lon that the 'auto-select plane' feature will choose the closest plane to
 // autoselectCoords = [42, 21];
 
-// Center marker. If dump1090 provides a receiver location,
-// that location is used and these settings are ignored.
-
 //SiteShow    = false;           // true to show a center marker
-//SiteLat     = 45.0;            // position of the marker
-//SiteLon     = 9.0;
 //SiteName    = "My Radar Site"; // tooltip of the marker
 
 // Update GPS location (keep map centered on GPS location)
@@ -379,7 +371,8 @@ HideCols = [
 
 //tableInView = false; // only show aircraft in current view (V button)
 
-//audio_url = ""; // show html5 audio player for this URL
+//audio_url = ["", "", "", "", "", ""]; // show html5 audio player for these URLs
+// example with titles: audio_url = [ ["URL1", "title1" ], ["URL2", "title2"] ];
 
 aiscatcher_server = "http://192.168.8.142:8443/"; // update with your server address
 aiscatcher_refresh = 15; // refresh interval in seconds
@@ -425,3 +418,12 @@ tableColors = {
 //prefer978 = 0;
 //
 // dynGlobeRate = false; // enable use of globeRates.json in index.html directory to steer client refresh rate
+
+// !!! Please set the latitude / longitude in the decoder rather than
+// setting it here !!!
+// (graphs1090 will get the location from the decoder)
+//SiteLat     = 45.0;            // position of the marker
+//SiteLon     = 9.0;
+// Default center of the map if no Site location is set
+//DefaultCenterLat = 45.0;
+//DefaultCenterLon = 9.0;

@@ -28,9 +28,6 @@ let DisplayUnits = "nautical";
 // provided by dump1090 itself. All positions are in decimal
 // degrees.
 
-// Default center of the map.
-let DefaultCenterLat = 40.56;
-let DefaultCenterLon = -73.66
 // The google maps zoom level, 0 - 16, lower is further out
 let DefaultZoomLvl   = 9;
 
@@ -38,12 +35,8 @@ let autoselectCoords = null;
 
 let showGrid = false;
 
-// Center marker. If dump1090 provides a receiver location,
-// that location is used and these settings are ignored.
 
 let SiteShow    = true;           // true to show a center marker
-let SiteLat     = null;            // position of the marker
-let SiteLon     = null;
 let SiteName    = "My Radar Site"; // tooltip of the marker
 
 // Update GPS location (keep map centered on GPS location)
@@ -385,7 +378,8 @@ let darkModeDefault = true; // turn on dark mode by default (change in browser p
 
 let tableInView = false; // only show aircraft in current view (V button)
 
-let audio_url = ""; // show html5 audio player for this URL
+let audio_url = ["", "", "", "", "", ""]; // show html5 audio player for these URLs
+// example with titles: audio_url = [ ["URL1", "title1" ], ["URL2", "title2"] ];
 
 let aiscatcher_server = "";
 let aiscatcher_refresh = 15;
@@ -445,3 +439,14 @@ let dynGlobeRate = false; // enable use of globeRates.json in index.html directo
 
 let multiOutline = false;
 let inhibitIframe = false;
+
+
+// !!! Please set the latitude / longitude in the decoder rather than
+// setting it here !!!
+// (graphs1090 will get the location from the decoder)
+let SiteLat     = null;            // position of the marker
+let SiteLon     = null;
+
+// Default center of the map if no Site location is set
+let DefaultCenterLat = 40.56;
+let DefaultCenterLon = -73.66
