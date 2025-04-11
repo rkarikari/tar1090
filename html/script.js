@@ -867,9 +867,32 @@ function initPage() {
 function earlyInitPage() {
     // things that can run without receiver json being known
     if (audio_url) {
-        jQuery('#mp3player').show();
-        document.getElementById('mp3player_audio').src = audio_url;
+        if (!Array.isArray(audio_url)) {
+            audio_url = [ audio_url ];
+        }
+        let html = "";
+        for (const entry of audio_url) {
+            let url = entry;
+            let title = entry;
+            if (Array.isArray(url)) {
+                url = entry[0];
+                title = entry[1];
+            }
+            if (url) {
+                html += `
+                    <tr><td style="text-align: center">${title}</td></tr>
+                    <tr><td style="text-align: center">
+                    <audio crossorigin="anonymous" preload="none" src="${url}" type="audio/mp3" controls="controls" autoplay="false"></audio>
+                    </td></tr>
+                `;
+            }
+        }
+        if (html) {
+            document.getElementById('mp3player').innerHTML = html;
+            jQuery('#mp3player').show();
+        }
     }
+
     let value;
 
     if (uk_advisory) {
@@ -1189,6 +1212,7 @@ function earlyInitPage() {
 
     jQuery("#altimeter_form").submit(onAltimeterChange);
     jQuery("#altimeter_set_standard").click(onAltimeterSetStandard);
+    jQuery("#altimeter_set_selected").click(onAltimeterSetSelected);
 
     // Set up altitude filter button event handlers and validation options
     jQuery("#altitude_filter_form").submit(onFilterByAltitude);
@@ -3343,6 +3367,12 @@ let somethingSelected = false;
 // Refresh the detail window about the plane
 function refreshSelected() {
     const selected = SelectedPlane;
+
+    if (!selected || !selected.nav_qnh) {
+        jQuery('#altimeter_set_selected').prop("disabled", true);
+    } else {
+        jQuery('#altimeter_set_selected').prop("disabled", false);
+    }
 
     if (!selected) {
         if (somethingSelected) {
@@ -7569,11 +7599,23 @@ function currentExtent(factor) {
 
 function replayDefaults(ts) {
     jQuery("#replayPlay").html("Pause");
+    let playing = true;
+    let speed = 30;
+    if (usp.has("replaySpeed")) {
+        speed = usp.getFloat("replaySpeed");
+    }
+    if (speed == 0) {
+        speed = 30;
+        playing = false;
+    }
+    if (usp.has("replayPaused")) {
+        playing = false;
+    }
     return {
-        playing: true,
+        playing: playing,
         ts: ts,
         ival: 60 * 1000,
-        speed: 30,
+        speed: speed,
         dateText: zDateString(ts),
         hours: ts.getUTCHours(),
         minutes: ts.getUTCMinutes(),
@@ -8909,6 +8951,14 @@ function getn(n) {
 function onAltimeterSetStandard(e) {
     e.preventDefault();
     jQuery("#altimeter_input").val(1013.25);
+    onAltimeterChange(e);
+}
+function onAltimeterSetSelected(e) {
+    e.preventDefault();
+    if (!SelectedPlane || !SelectedPlane.nav_qnh) {
+        return;
+    }
+    jQuery("#altimeter_input").val(SelectedPlane.nav_qnh);
     onAltimeterChange(e);
 }
 function onAltimeterChange(e) {
